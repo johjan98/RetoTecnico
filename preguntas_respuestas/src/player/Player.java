@@ -1,5 +1,7 @@
+package player;
+
 public class Player {
-  private String name;
+  private final String name;
   private static int id = 0;
   private int currentRound;
   private double acumulatedPrize;
@@ -15,5 +17,13 @@ public class Player {
 
   public void finishGame(){
 
+  }
+
+  public void nextQuestion(){
+
+  }
+
+  public String getName() {
+    return name;
   }
 }
