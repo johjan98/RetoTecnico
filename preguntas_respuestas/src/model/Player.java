@@ -2,27 +2,14 @@ package model;
 
 public class Player {
   private final String name;
-  private static int id = 0;
-  private int currentRound;
-  private double acumulatedPrize;
+  private int id;
+  private int currentRound = 0;
+  private double acumulatedPrize = 0;
 
-  public Player(String name) {
+  public Player(String name, int id) {
     this.name = name;
-    id++;
+    this.id = id;
   }
-
-  public void startGame(){
-
-  }
-
-  public void finishGame(){
-
-  }
-
-  public void nextQuestion(){
-
-  }
-
   public String getName() {
     return name;
   }

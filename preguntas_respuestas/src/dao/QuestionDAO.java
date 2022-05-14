@@ -14,7 +14,7 @@ public class QuestionDAO {
   public static int createQuestion(Question question){
     ResultSet rs = null;
     int idQuestion = -1;
-    try(Connection cnxn = DataBaseConnection.getConnection();){
+    try(Connection cnxn = DataBaseConnection.getConnection()){
       PreparedStatement ps = null;
       try{
         String queryCreate = "INSERT INTO question(statement, difficulty_level) VALUES (?, ?)";
@@ -22,7 +22,7 @@ public class QuestionDAO {
         ps.setString(1, question.getStatement());
         ps.setInt(2, question.getLevel());
         ps.executeUpdate();
-        System.out.println("Pregunta creado con exito.");
+        System.out.println("Pregunta creada con exito.");
 
         String idQuery = "SELECT id FROM question WHERE statement=?";
         ps = cnxn.prepareStatement(idQuery);

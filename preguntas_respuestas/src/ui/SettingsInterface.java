@@ -53,7 +53,7 @@ public class SettingsInterface {
 
     int idQuestion = QuestionDAO.createQuestion(createQuestion(question, level+1));
     if(idQuestion != -1){
-      System.out.println("id btenido:" + idQuestion);
+      System.out.println("id obtenido:" + idQuestion);
       addAnswers(idQuestion);
     }else {
       System.out.println("no se obtuvo id");
