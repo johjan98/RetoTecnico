@@ -3,8 +3,14 @@ package model;
 public class Question {
   private String statement;
   private int level;
+  private int id;
 
   public Question(String statement, int level) {
+    this.statement = statement;
+    this.level = level;
+  }
+  public Question(int id, String statement, int level){
+    this.id = id;
     this.statement = statement;
     this.level = level;
   }

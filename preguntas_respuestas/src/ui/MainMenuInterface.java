@@ -47,7 +47,7 @@ public class MainMenuInterface {
               options[0]);
 
     switch (optionSelected){
-      case 0 -> GameInterface.startGame(player);
+      case 0 -> GameInterface.showRoundInfo(player);
       case 1 -> MainMenuInterface.mainMenu();
     }
   }
