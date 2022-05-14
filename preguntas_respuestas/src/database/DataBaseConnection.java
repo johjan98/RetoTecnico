@@ -5,6 +5,8 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 
 public class DataBaseConnection {
+
+  private DataBaseConnection(){}
   public static Connection getConnection() {
     Connection connection = null;
     try {
@@ -13,9 +15,9 @@ public class DataBaseConnection {
               "jdbc:postgresql://localhost:5432/preguntas_respuestas",
               "postgres",
               "");
-      if (connection != null) {
-        System.out.println("DB connection successful");
-      }
+
+      System.out.println("DB connection successful");
+
     } catch (SQLException e) {
       System.out.println("Error de conexión: " + e);
     } catch (ClassNotFoundException e) {

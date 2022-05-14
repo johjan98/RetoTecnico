@@ -1,12 +1,7 @@
-import database.DataBaseConnection;
-import ui.UserInterface;
-
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
+import ui.MainMenuInterface;
 
 public class Main {
   public static void main(String[] args){
-    UserInterface.mainMenu();
+    MainMenuInterface.mainMenu();
   }
 }
