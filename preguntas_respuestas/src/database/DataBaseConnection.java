@@ -14,7 +14,7 @@ public class DataBaseConnection {
       connection = DriverManager.getConnection(
               "jdbc:postgresql://localhost:5432/preguntas_respuestas",
               "postgres",
-              "J0hj4nGuit4r2012");
+              "");
 
       System.out.println("DB connection successful");
 
