@@ -1,5 +1,7 @@
 package model;
 
+import java.util.List;
+
 public class Question {
   private String statement;
   private int level;
@@ -15,19 +17,25 @@ public class Question {
     this.level = level;
   }
 
-  public String getStatement() {
-    return statement;
+  public String formatQuestion(String[] answers){
+    return
+            this.statement
+                    + "\n1. " + answers[0]
+                    + "\n2. " + answers[1]
+                    + "\n3. " + answers[2]
+                    + "\n4. " + answers[3]
+    ;
   }
 
-  public void setStatement(String statement) {
-    this.statement = statement;
+  public String getStatement() {
+    return statement;
   }
 
   public int getLevel() {
     return level;
   }
 
-  public void setLevel(int level) {
-    this.level = level;
+  public int getId() {
+    return id;
   }
 }

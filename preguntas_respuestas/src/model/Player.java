@@ -13,12 +13,18 @@ public class Player {
   public String getName() {
     return name;
   }
-
   public double getAcumulatedPrize() {
     return acumulatedPrize;
   }
-
   public int getCurrentRound() {
     return currentRound;
+  }
+
+  public void setCurrentRound(int currentRound) {
+    this.currentRound = currentRound;
+  }
+
+  public void setAcumulatedPrize(double acumulatedPrize) {
+    this.acumulatedPrize = acumulatedPrize;
   }
 }
