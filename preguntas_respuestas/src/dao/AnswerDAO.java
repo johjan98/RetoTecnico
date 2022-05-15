@@ -8,8 +8,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 
 public class AnswerDAO {
@@ -25,6 +23,19 @@ public class AnswerDAO {
       ps.setBoolean(3, answer.isCorrect());
       ps.executeUpdate();
       System.out.println("Respuesta agregada con éxito.");
+    }catch (SQLException e){
+      System.out.println("Error query: " + e);
+    }
+  }
+
+  public static void deleteAnswers(int idQuestion){
+    try(Connection cnxn = DataBaseConnection.getConnection()){
+      PreparedStatement ps = null;
+      String query = "DELETE FROM answer WHERE id_question = ?";
+      ps = cnxn.prepareStatement(query);
+      ps.setInt(1, idQuestion);
+      ps.executeUpdate();
+      System.out.println("Respuestas eliminadas.");
     }catch (SQLException e){
       System.out.println("Error query: " + e);
     }

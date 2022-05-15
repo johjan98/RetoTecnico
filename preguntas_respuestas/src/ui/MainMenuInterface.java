@@ -33,7 +33,9 @@ public class MainMenuInterface {
     String name = JOptionPane.showInputDialog(
               null,
               "Ingrese su nombre.");
-
+    if(name == null){
+      mainMenu();
+    }
     Player player = PlayerDAO.verifyPlayer(name);
 
     int optionSelected = JOptionPane.showOptionDialog(
@@ -46,9 +48,10 @@ public class MainMenuInterface {
               options,
               options[0]);
 
-    switch (optionSelected){
-      case 0 -> GameInterface.showRoundInfo(player);
-      case 1 -> MainMenuInterface.mainMenu();
+    if (optionSelected == 0) {
+      GameInterface.showRoundInfo(player);
+    } else if (optionSelected == 1) {
+      MainMenuInterface.mainMenu();
     }
   }
 }

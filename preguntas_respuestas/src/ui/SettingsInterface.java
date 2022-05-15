@@ -38,8 +38,10 @@ public class SettingsInterface {
 
     String question = JOptionPane.showInputDialog(
             null,
-            "Ingrese una pregunta.",
-            JOptionPane.QUESTION_MESSAGE);
+            "Ingrese una pregunta.");
+    if (question == null){
+      settingsMenu();
+    }
 
     int level = JOptionPane.showOptionDialog(
             null,
@@ -68,23 +70,46 @@ public class SettingsInterface {
     String correctAnswer = JOptionPane.showInputDialog(
             null,
             CORRECT_ANSWER);
-    AnswerDAO.addAnswer(createAnswer(correctAnswer, idQuestion, true));
+    if(correctAnswer == null){
+      QuestionDAO.deleteQuestion(idQuestion);
+      AnswerDAO.deleteAnswers(idQuestion);
+      settingsMenu();
+    }else {
+      AnswerDAO.addAnswer(createAnswer(correctAnswer, idQuestion, true));
+    }
 
     String wrongAnswer = JOptionPane.showInputDialog(
             null,
             WRONG_ANSWER);
-    AnswerDAO.addAnswer(createAnswer(wrongAnswer, idQuestion, false));
+    if(wrongAnswer == null){
+      QuestionDAO.deleteQuestion(idQuestion);
+      AnswerDAO.deleteAnswers(idQuestion);
+      settingsMenu();
+    }else {
+      AnswerDAO.addAnswer(createAnswer(wrongAnswer, idQuestion, false));
+    }
 
     wrongAnswer = JOptionPane.showInputDialog(
             null,
             WRONG_ANSWER);
-    AnswerDAO.addAnswer(createAnswer(wrongAnswer, idQuestion, false));
+    if(wrongAnswer == null){
+      QuestionDAO.deleteQuestion(idQuestion);
+      AnswerDAO.deleteAnswers(idQuestion);
+      settingsMenu();
+    }else {
+      AnswerDAO.addAnswer(createAnswer(wrongAnswer, idQuestion, false));
+    }
 
     wrongAnswer = JOptionPane.showInputDialog(
             null,
             WRONG_ANSWER);
-    AnswerDAO.addAnswer(createAnswer(wrongAnswer, idQuestion, false));
-
+    if(wrongAnswer == null){
+      QuestionDAO.deleteQuestion(idQuestion);
+      AnswerDAO.deleteAnswers(idQuestion);
+      settingsMenu();
+    }else {
+      AnswerDAO.addAnswer(createAnswer(wrongAnswer, idQuestion, false));
+    }
     settingsMenu();
 
   }

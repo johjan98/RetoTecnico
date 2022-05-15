@@ -3,12 +3,10 @@ package dao;
 import database.DataBaseConnection;
 import model.Question;
 
-import javax.xml.crypto.Data;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.List;
 
 public class QuestionDAO {
   private QuestionDAO() {}
@@ -38,6 +36,19 @@ public class QuestionDAO {
     }
 
     return idQuestion;
+  }
+
+  public static void deleteQuestion(int id){
+    try(Connection cnxn = DataBaseConnection.getConnection()){
+      PreparedStatement ps = null;
+      String query = "DELETE FROM question WHERE id = ?";
+      ps = cnxn.prepareStatement(query);
+      ps.setInt(1, id);
+      ps.executeUpdate();
+      System.out.println("Pregunta eliminada.");
+    }catch (SQLException e){
+      System.out.println("Error query: " + e);
+    }
   }
 
   public static Question selectQuestion(int round){

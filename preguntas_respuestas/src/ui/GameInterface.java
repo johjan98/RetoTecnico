@@ -1,6 +1,7 @@
 package ui;
 
 import dao.AnswerDAO;
+import dao.PlayerDAO;
 import dao.QuestionDAO;
 import model.Player;
 import model.Question;
@@ -17,25 +18,29 @@ public class GameInterface {
   private GameInterface() {}
 
   public static void showRoundInfo(Player player){
-    String[] options = {"Continuar", "Retirarse"};
+    if(player.getCurrentRound() >= 6){
+      gameWon(player);
+    }else {
+      String[] options = {"Continuar", "Retirarse"};
 
-    int optionSelected = JOptionPane.showOptionDialog(
-            null,
-            "Jugador: " + player.getName()
-                    + "\nPremio acumulado: " + player.getAcumulatedPrize()
-                    + "\nRound: " + player.getCurrentRound(),
-            TITLE,
-            JOptionPane.YES_NO_CANCEL_OPTION,
-            JOptionPane.QUESTION_MESSAGE,
-            null,
-            options,
-            options[0]
-    );
+      int optionSelected = JOptionPane.showOptionDialog(
+              null,
+              "Jugador: " + player.getName()
+                      + "\nPremio acumulado: $ " + player.getAcumulatedPrize()
+                      + "\nRound: " + player.getCurrentRound(),
+              TITLE,
+              JOptionPane.YES_NO_CANCEL_OPTION,
+              JOptionPane.QUESTION_MESSAGE,
+              null,
+              options,
+              options[0]
+      );
 
-    if (optionSelected == 0) {
-      showQuestion(player);
-    } else if (optionSelected == 1) {
-      MainMenuInterface.mainMenu();
+      if (optionSelected == 0) {
+        showQuestion(player);
+      } else if (optionSelected == 1) {
+        gameWon(player);
+      }
     }
   }
 
@@ -70,17 +75,81 @@ public class GameInterface {
         case 5 -> player.setAcumulatedPrize(player.getAcumulatedPrize() + FIFTH_PRIZE);
         default -> {}
       }
-
       player.setCurrentRound(player.getCurrentRound() + 1);
-      if(player.getCurrentRound() == 6){
-        MainMenuInterface.mainMenu();
-      }else {
-        showRoundInfo(player);
-      }
+      showRoundInfo(player);
+    }else {
+      gameLost(player);
     }
   }
 
   private static void gameWon(Player player){
+    String message;
+    String[] options = {"Jugar de nuevo", "Salir"};
+    if(player.getCurrentRound() >= 6) {
+      player.setTotalGames(player.getTotalGames() + 1);
+      player.setGamesWon(player.getGamesWon() + 1);
+      player.setTotalPrize(player.getTotalPrize() + player.getAcumulatedPrize());
+      message = "Felicidades " + player.getName()
+              + ".\nGanaste el juego con un total de $ " + player.getAcumulatedPrize()
+              + ".\nAcumulas $ " + player.getTotalPrize() + " por todas tus "+ player.getTotalGames()
+              + " partidas jugadas. \nVuelve pronto.";
+      PlayerDAO.saveDataPlayer(player);
+    }else {
+      player.setTotalGames(player.getTotalGames() + 1);
+      player.setTotalPrize(player.getTotalPrize() + player.getAcumulatedPrize());
+      message = "Felicidades " + player.getName()
+              + ".\nTe retiras con un total de $ " + player.getAcumulatedPrize()
+              + ".\nAcumulas $ " + player.getTotalPrize() + " en tus "+ player.getTotalGames()
+              + " partidas jugadas. \nVuelve pronto.";
+      PlayerDAO.saveDataPlayer(player);
+    }
 
+    int optionSelected = JOptionPane.showOptionDialog(
+            null,
+            message,
+            TITLE,
+            JOptionPane.YES_NO_CANCEL_OPTION,
+            JOptionPane.INFORMATION_MESSAGE,
+            null,
+            options,
+            options[1]);
+
+    player.setAcumulatedPrize(0);
+    player.setCurrentRound(1);
+
+    if (optionSelected == 0){
+      showRoundInfo(player);
+    }else {
+      MainMenuInterface.mainMenu();
+    }
+  }
+
+  private static void gameLost(Player player){
+
+    player.setTotalGames(player.getTotalGames() + 1);
+    String[] options = {"Jugar de nuevo", "Salir"};
+    String message = "Respuesta incorrecta."
+            + "\nPremio: $ 0 "
+            + "\nTotal acumulado en " + player.getTotalGames() + " partidas: $ " + player.getTotalPrize()
+            + "\nVuelve a intentarlo.";
+
+    int optionSelected = JOptionPane.showOptionDialog(
+            null,
+            message,
+            TITLE,
+            JOptionPane.YES_NO_CANCEL_OPTION,
+            JOptionPane.INFORMATION_MESSAGE,
+            null,
+            options,
+            options[1]);
+
+    player.setAcumulatedPrize(0);
+    player.setCurrentRound(1);
+
+    if (optionSelected == 0){
+      showRoundInfo(player);
+    }else {
+      MainMenuInterface.mainMenu();
+    }
   }
 }
