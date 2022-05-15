@@ -9,8 +9,12 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Objects;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class AnswerDAO {
+  private static final Logger logger = Logger.getLogger(AnswerDAO.class.getName());
+  private static final String ERROR_QUERY = "Error query: ";
   private AnswerDAO(){}
   public static void addAnswer(Answer answer){
     try(Connection cnxn = DataBaseConnection.getConnection()){
@@ -22,22 +26,21 @@ public class AnswerDAO {
       ps.setString(2, answer.getStatement());
       ps.setBoolean(3, answer.isCorrect());
       ps.executeUpdate();
-      System.out.println("Respuesta agregada con éxito.");
+      logger.info("Respuesta agregada con éxito.");
     }catch (SQLException e){
-      System.out.println("Error query: " + e);
+      logger.log(Level.SEVERE,ERROR_QUERY , e);
     }
   }
 
-  public static void deleteAnswers(int idQuestion){
-    try(Connection cnxn = DataBaseConnection.getConnection()){
-      PreparedStatement ps = null;
-      String query = "DELETE FROM answer WHERE id_question = ?";
-      ps = cnxn.prepareStatement(query);
+  public static void deleteAnswers(int idQuestion) {
+    Connection cnxn = DataBaseConnection.getConnection();
+    String query = "DELETE FROM answer WHERE id_question = ?";
+    try (PreparedStatement ps = cnxn.prepareStatement(query)) {
       ps.setInt(1, idQuestion);
       ps.executeUpdate();
-      System.out.println("Respuestas eliminadas.");
-    }catch (SQLException e){
-      System.out.println("Error query: " + e);
+      logger.info("Respuestas eliminadas.");
+    } catch (SQLException e) {
+      logger.log(Level.SEVERE, ERROR_QUERY, e);
     }
   }
 
@@ -46,7 +49,7 @@ public class AnswerDAO {
     String[] answers = {"", "", "", "", ""};
     try(Connection cnxn = DataBaseConnection.getConnection()){
       PreparedStatement ps = null;
-      String query = "SELECT id, statement FROM answer WHERE id_question = ? ORDER BY random()";
+      String query = "SELECT id, statement FROM answer WHERE id_question = ? ORDER BY rand()";
       ps = cnxn.prepareStatement(query);
       ps.setInt(1, question.getId());
       rs = ps.executeQuery();
@@ -65,7 +68,7 @@ public class AnswerDAO {
         answers[4] = rs.getString("id");
       }
     }catch (SQLException e){
-      System.out.println("Error query: " + e);
+      logger.log(Level.SEVERE,ERROR_QUERY , e);
     }
     return answers;
   }
@@ -90,7 +93,7 @@ public class AnswerDAO {
       }
 
     }catch (SQLException e){
-      System.out.println("Error query: " + e);
+      logger.log(Level.SEVERE,ERROR_QUERY , e);
     }
 
     return answerValidated;

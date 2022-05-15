@@ -7,8 +7,10 @@ import model.Player;
 import model.Question;
 
 import javax.swing.*;
+import java.util.logging.Logger;
 
 public class GameInterface {
+  private static final Logger logger = Logger.getLogger(GameInterface.class.getName());
   private static final int FIRST_PRIZE = 100;
   private static final int SECOND_PRIZE = 400;
   private static final int THIRD_PRIZE = 1000;
@@ -73,7 +75,7 @@ public class GameInterface {
         case 3 -> player.setAcumulatedPrize(player.getAcumulatedPrize() + THIRD_PRIZE);
         case 4 -> player.setAcumulatedPrize(player.getAcumulatedPrize() + FOURTH_PRIZE);
         case 5 -> player.setAcumulatedPrize(player.getAcumulatedPrize() + FIFTH_PRIZE);
-        default -> {}
+        default -> logger.info("Ultima Ronda");
       }
       player.setCurrentRound(player.getCurrentRound() + 1);
       showRoundInfo(player);

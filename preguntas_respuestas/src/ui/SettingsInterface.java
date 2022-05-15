@@ -6,8 +6,10 @@ import model.Answer;
 import model.Question;
 
 import javax.swing.*;
+import java.util.logging.Logger;
 
 public class SettingsInterface {
+  private static final Logger logger = Logger.getLogger(SettingsInterface.class.getName());
   private SettingsInterface() {}
 
   private static final String TITLE = "Preguntas y Respuestas";
@@ -28,7 +30,7 @@ public class SettingsInterface {
     switch (optionSelected){
       case 0 -> addQuestion();
       case 1 -> MainMenuInterface.mainMenu();
-      default -> {}
+      default -> logger.info("");
     }
 
   }
@@ -55,10 +57,10 @@ public class SettingsInterface {
 
     int idQuestion = QuestionDAO.createQuestion(createQuestion(question, level+1));
     if(idQuestion != -1){
-      System.out.println("id obtenido:" + idQuestion);
+      logger.info("id obtenido: " + idQuestion);
       addAnswers(idQuestion);
     }else {
-      System.out.println("no se obtuvo id");
+      logger.info("no se obtuvo id");
       settingsMenu();
     }
   }

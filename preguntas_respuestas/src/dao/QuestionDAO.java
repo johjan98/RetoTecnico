@@ -7,8 +7,12 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class QuestionDAO {
+  private static final Logger logger = Logger.getLogger(QuestionDAO.class.getName());
+  private static final String ERROR_QUERY = "Error query: ";
   private QuestionDAO() {}
 
   public static int createQuestion(Question question){
@@ -22,7 +26,7 @@ public class QuestionDAO {
       ps.setString(1, question.getStatement());
       ps.setInt(2, question.getLevel());
       ps.executeUpdate();
-      System.out.println("Pregunta creada con exito.");
+      logger.info("Pregunta creada con exito.");
 
       String idQuery = "SELECT id FROM question WHERE statement=?";
       ps = cnxn.prepareStatement(idQuery);
@@ -32,7 +36,7 @@ public class QuestionDAO {
         idQuestion = rs.getInt("id");
       }
     }catch (SQLException e){
-      System.out.println("Error query: " + e);
+      logger.log(Level.SEVERE,ERROR_QUERY , e);
     }
 
     return idQuestion;
@@ -45,9 +49,9 @@ public class QuestionDAO {
       ps = cnxn.prepareStatement(query);
       ps.setInt(1, id);
       ps.executeUpdate();
-      System.out.println("Pregunta eliminada.");
+      logger.info("Pregunta eliminada.");
     }catch (SQLException e){
-      System.out.println("Error query: " + e);
+      logger.log(Level.SEVERE,ERROR_QUERY , e);
     }
   }
 
@@ -56,7 +60,7 @@ public class QuestionDAO {
     Question question = null;
     try(Connection cnxn = DataBaseConnection.getConnection()){
       PreparedStatement ps = null;
-      String query = "SELECT id, statement FROM question WHERE difficulty_level = ? ORDER BY random() LIMIT 1";
+      String query = "SELECT id, statement FROM question WHERE difficulty_level = ? ORDER BY rand() LIMIT 1";
       ps = cnxn.prepareStatement(query);
       ps.setInt(1, round);
       rs = ps.executeQuery();
@@ -65,7 +69,7 @@ public class QuestionDAO {
         question = new Question(rs.getInt("id"), rs.getString("statement"), round);
       }
     }catch (SQLException e){
-      System.out.println("Error query: " + e);
+      logger.log(Level.SEVERE,ERROR_QUERY , e);
     }
 
     return question;

@@ -7,15 +7,18 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class PlayerDAO {
+  private static final Logger logger = Logger.getLogger(PlayerDAO.class.getName());
+  public static final String ERROR_QUERY = "Error query: ";
   private PlayerDAO(){}
   public static Player verifyPlayer(String name){
-    ResultSet rs = null;
+    ResultSet rs;
     Player player = null;
     try(Connection cnxn = DataBaseConnection.getConnection()){
-      PreparedStatement ps = null;
-
+      PreparedStatement ps;
       String query = "SELECT id FROM player WHERE name=?";
       ps = cnxn.prepareStatement(query);
       ps.setString(1,name);
@@ -31,16 +34,16 @@ public class PlayerDAO {
         player = createPlayer(name);
       }
     }catch (SQLException e){
-      System.out.println("Error query: " + e);
+      logger.log(Level.SEVERE, ERROR_QUERY, e);
     }
     return player;
   }
 
   private static Player getPlayerData(int id){
     Player player = null;
-    ResultSet rs = null;
+    ResultSet rs;
     try(Connection cnxn = DataBaseConnection.getConnection()){
-      PreparedStatement ps = null;
+      PreparedStatement ps;
       String query = "SELECT * FROM player WHERE id = ?";
       ps = cnxn.prepareStatement(query);
       ps.setInt(1, id);
@@ -55,7 +58,7 @@ public class PlayerDAO {
                 rs.getInt("total_games"));
       }
     }catch (SQLException e){
-      System.out.println("Error query: " + e);
+      logger.log(Level.SEVERE, ERROR_QUERY , e);
     }
     return player;
   }
@@ -63,14 +66,14 @@ public class PlayerDAO {
   private static Player createPlayer(String name){
     Player player = null;
     try(Connection cnxn = DataBaseConnection.getConnection()){
-      PreparedStatement ps = null;
-      ResultSet rs = null;
+      PreparedStatement ps;
+      ResultSet rs;
 
       String query = "INSERT INTO player(name, games_won, total_games, total_prize) VALUES (?, 0, 0, 0)";
       ps = cnxn.prepareStatement(query);
       ps.setString(1, name);
       ps.executeUpdate();
-      System.out.println("Jugador creado con éxito.");
+      logger.info("Jugador creado con éxito.");
 
       String idQuery = "SELECT id FROM player WHERE name=?";
       ps = cnxn.prepareStatement(idQuery);
@@ -84,7 +87,7 @@ public class PlayerDAO {
         player = new Player(name, idPlayer);
       }
     }catch (SQLException e){
-      System.out.println("Error query: " + e);
+      logger.log(Level.SEVERE,ERROR_QUERY , e);
     }
     return player;
   }
@@ -100,11 +103,11 @@ public class PlayerDAO {
       ps.setInt(4, player.getId());
       int rowsAffected = ps.executeUpdate();
       if (rowsAffected == 1){
-        System.out.println("Jugador actualizado con éxito");
+        logger.info("Jugador actualizado con éxito");
       }
 
     }catch (SQLException e){
-      System.out.println("Error query: " + e);
+      logger.log(Level.SEVERE,ERROR_QUERY, e);
     }
   }
 }
