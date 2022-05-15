@@ -15,12 +15,12 @@ public class PlayerDAO {
   public static final String ERROR_QUERY = "Error query: ";
   private PlayerDAO(){}
   public static Player verifyPlayer(String name){
+    Connection cnxn = DataBaseConnection.getConnection();
+    String query = "SELECT id FROM player WHERE name=?";
     ResultSet rs;
     Player player = null;
-    try(Connection cnxn = DataBaseConnection.getConnection()){
-      PreparedStatement ps;
-      String query = "SELECT id FROM player WHERE name=?";
-      ps = cnxn.prepareStatement(query);
+    try(PreparedStatement ps = cnxn.prepareStatement(query)){
+
       ps.setString(1,name);
       rs = ps.executeQuery();
       int idPlayer = -1;
@@ -40,12 +40,11 @@ public class PlayerDAO {
   }
 
   private static Player getPlayerData(int id){
+    Connection cnxn = DataBaseConnection.getConnection();
+    String query = "SELECT * FROM player WHERE id = ?";
     Player player = null;
     ResultSet rs;
-    try(Connection cnxn = DataBaseConnection.getConnection()){
-      PreparedStatement ps;
-      String query = "SELECT * FROM player WHERE id = ?";
-      ps = cnxn.prepareStatement(query);
+    try(PreparedStatement ps = cnxn.prepareStatement(query)){
       ps.setInt(1, id);
       rs = ps.executeQuery();
 
@@ -64,27 +63,28 @@ public class PlayerDAO {
   }
 
   private static Player createPlayer(String name){
+    Connection cnxn = DataBaseConnection.getConnection();
+    String query = "INSERT INTO player(name, games_won, total_games, total_prize) VALUES (?, 0, 0, 0)";
     Player player = null;
-    try(Connection cnxn = DataBaseConnection.getConnection()){
-      PreparedStatement ps;
-      ResultSet rs;
+    ResultSet rs;
+    try(PreparedStatement ps = cnxn.prepareStatement(query)){
 
-      String query = "INSERT INTO player(name, games_won, total_games, total_prize) VALUES (?, 0, 0, 0)";
-      ps = cnxn.prepareStatement(query);
       ps.setString(1, name);
       ps.executeUpdate();
       logger.info("Jugador creado con éxito.");
 
       String idQuery = "SELECT id FROM player WHERE name=?";
-      ps = cnxn.prepareStatement(idQuery);
-      ps.setString(1, name);
-      rs = ps.executeQuery();
-      int idPlayer = -1;
-      while (rs.next()){
-        idPlayer = rs.getInt("id");
-      }
-      if (idPlayer != -1) {
-        player = new Player(name, idPlayer);
+      try(PreparedStatement ps1 = cnxn.prepareStatement(idQuery)) {
+        ps1.setString(1, name);
+        rs = ps1.executeQuery();
+        int idPlayer = -1;
+        while (rs.next()) {
+          idPlayer = rs.getInt("id");
+        }
+
+        if (idPlayer != -1) {
+          player = new Player(name, idPlayer);
+        }
       }
     }catch (SQLException e){
       logger.log(Level.SEVERE,ERROR_QUERY , e);
@@ -93,10 +93,9 @@ public class PlayerDAO {
   }
 
   public static void saveDataPlayer(Player player){
-    try(Connection cnxn =  DataBaseConnection.getConnection()){
-      PreparedStatement ps = null;
-      String query = "UPDATE player SET games_won = ?, total_games = ?, total_prize = ? WHERE id = ?";
-      ps = cnxn.prepareStatement(query);
+    Connection cnxn =  DataBaseConnection.getConnection();
+    String query = "UPDATE player SET games_won = ?, total_games = ?, total_prize = ? WHERE id = ?";
+    try(PreparedStatement ps = cnxn.prepareStatement(query)){
       ps.setInt(1, player.getGamesWon());
       ps.setInt(2, player.getTotalGames());
       ps.setInt(3, player.getTotalPrize());
